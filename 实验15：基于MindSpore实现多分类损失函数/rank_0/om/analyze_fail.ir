@@ -1,0 +1,141 @@
+# ===============================================================================================
+# The following shows the last analyze fail log message.
+# ===============================================================================================
+
+----------------------------------------------------
+- Caught exception:
+----------------------------------------------------
+The name 'label' is not defined, or not supported in graph mode.
+
+----------------------------------------------------
+- C++ Call Stack: (For framework developers)
+----------------------------------------------------
+mindspore\ccsrc\pipeline\jit\ps\parse\function_block.cc:315 mindspore::parse::FunctionBlock::CheckUndefinedSymbol
+
+----------------------------------------------------
+- The Traceback of Net Construct Code:
+----------------------------------------------------
+# 0 In file D:\CodeEnvironment\Anaconda3\envs\mindspore\Lib\site-packages\mindspore\ops\composite\base.py:606, 37~39
+                        return grad_(fn, weights)(*args)
+                                     ^~
+
+# ===============================================================================================
+# The following shows the IR when the function graphs evaluation fails to help locate the problem.
+# You can search the last ------------------------> to the node which is evaluated failure.
+# Refer to https://www.mindspore.cn/search?inputValue=analyze_fail.ir to get more instructions.
+# ===============================================================================================
+
+# IR entry: @after_grad_441
+# Total subgraphs: 0
+
+# Total params: 2
+# Params:
+%para1_args0: <null>
+%para2_args1: <null>
+
+subgraph attr:
+subgraph instance: after_grad_441 : 00000248073158B0
+# In file D:\CodeEnvironment\Anaconda3\envs\mindspore\Lib\site-packages\mindspore\ops\composite\base.py:604~606, 20~56/                    @jit(input_signature=dynamic_shape_inputs)/
+subgraph @after_grad_441() {
+  %0(CNode_446) = resolve(NameSpace[Entry: 'after_grad'], after_grad)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+  %1(CNode_447) = MakeTuple(%para1_args0, %para2_args1)
+      : (<Tensor[Float32], (16, 1)>, <Tuple[Tensor[Float32]*2], TupleShape((16, 1), (16, 1))>) -> (<Tuple[Tensor[Float32],Tuple[Tensor[Float32]*2]], TupleShape((16, 1), TupleShape((16, 1), (16, 1)))>)
+      #scope: (Default)
+
+#------------------------> 0
+  %2(CNode_448) = DoUnpackCall(%0, %1)
+      : (<Func, NoShape>, <Tuple[Tensor[Float32],Tuple[Tensor[Float32]*2]], TupleShape((16, 1), TupleShape((16, 1), (16, 1)))>) -> (<null>)
+      #scope: (Default)
+  Return(%2)
+      : (<null>)
+      #scope: (Default)
+      # In file D:\CodeEnvironment\Anaconda3\envs\mindspore\Lib\site-packages\mindspore\ops\composite\base.py:606, 24~56/                        return grad_(fn, weights)(*args)/
+}
+# Order:
+#   1: @after_grad_441:CNode_446{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> Entry: 'after_grad', [2]: ValueNode<Symbol> after_grad}
+#   2: @after_grad_441:CNode_448{[0]: ValueNode<Primitive> DoUnpackCall, [1]: CNode_446, [2]: CNode_447}
+#   3: @after_grad_441:CNode_449{[0]: ValueNode<Primitive> Return, [1]: CNode_448}
+
+
+subgraph attr:
+core: 1
+subgraph instance: UnpackCall_442 : 0000024807310540
+
+subgraph @UnpackCall_442(%para0_Parameter_443, %para0_Parameter_444) {
+  %0(CNode_450) = TupleGetItem(%para0_Parameter_444, I64(0))
+      : (<Tuple[Tensor[Float32],Tuple[Tensor[Float32]*2]], TupleShape((16, 1), TupleShape((16, 1), (16, 1)))>, <Int64, NoShape>) -> (<Tensor[Float32], (16, 1)>)
+      #scope: (Default)
+  %1(CNode_451) = TupleGetItem(%para0_Parameter_444, I64(1))
+      : (<Tuple[Tensor[Float32],Tuple[Tensor[Float32]*2]], TupleShape((16, 1), TupleShape((16, 1), (16, 1)))>, <Int64, NoShape>) -> (<Tuple[Tensor[Float32]*2], TupleShape((16, 1), (16, 1))>)
+      #scope: (Default)
+
+#------------------------> 1
+  %2(CNode_452) = Parameter_443(%0, %1)
+      : (<Tensor[Float32], (16, 1)>, <Tuple[Tensor[Float32]*2], TupleShape((16, 1), (16, 1))>) -> (<null>)
+      #scope: (Default)
+  Return(%2)
+      : (<null>)
+      #scope: (Default)
+}
+# Order:
+#   1: @UnpackCall_442:CNode_452{[0]: param_Parameter_443, [1]: CNode_450, [2]: CNode_451}
+#   2: @UnpackCall_442:CNode_453{[0]: ValueNode<Primitive> Return, [1]: CNode_452}
+
+
+subgraph attr:
+subgraph instance: after_grad_445 : 0000024807312110
+# In file D:\CodeEnvironment\Anaconda3\envs\mindspore\Lib\site-packages\mindspore\ops\composite\base.py:604~606, 20~56/                    @jit(input_signature=dynamic_shape_inputs)/
+subgraph @after_grad_445(%para0_args0, %para0_args1) {
+  %0(CNode_454) = resolve(NameSpace[SymbolStr: 'Namespace:mindspore.ops.composite.base..<after_grad>'], grad_)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+      # In file D:\CodeEnvironment\Anaconda3\envs\mindspore\Lib\site-packages\mindspore\ops\composite\base.py:606, 31~36/                        return grad_(fn, weights)(*args)/
+
+#------------------------> 2
+  %1(CNode_455) = resolve(NameSpace[SymbolStr: 'Namespace:mindspore.ops.composite.base..<after_grad>'], fn)
+      : (<External, NoShape>, <External, NoShape>) -> (<null>)
+      #scope: (Default)
+      # In file D:\CodeEnvironment\Anaconda3\envs\mindspore\Lib\site-packages\mindspore\ops\composite\base.py:606, 37~39/                        return grad_(fn, weights)(*args)/
+  %2(CNode_456) = resolve(NameSpace[SymbolStr: 'Namespace:mindspore.ops.composite.base..<after_grad>'], weights)
+      : (<null>, <null>) -> (<null>)
+      #scope: (Default)
+      # In file D:\CodeEnvironment\Anaconda3\envs\mindspore\Lib\site-packages\mindspore\ops\composite\base.py:606, 41~48/                        return grad_(fn, weights)(*args)/
+  %3(CNode_457) = %0(%1, %2)
+      : (<null>, <null>) -> (<null>)
+      #scope: (Default)
+      # In file D:\CodeEnvironment\Anaconda3\envs\mindspore\Lib\site-packages\mindspore\ops\composite\base.py:606, 31~49/                        return grad_(fn, weights)(*args)/
+  %4(CNode_458) = MakeTuple(%para0_args0, %para0_args1)
+      : (<Tensor[Float32], (16, 1)>, <Tuple[Tensor[Float32]*2], TupleShape((16, 1), (16, 1))>) -> (<null>)
+      #scope: (Default)
+      # In file D:\CodeEnvironment\Anaconda3\envs\mindspore\Lib\site-packages\mindspore\ops\composite\base.py:605, 36~40/                    def after_grad(*args):/
+  %5(CNode_459) = DoUnpackCall(%3, %4)
+      : (<null>, <null>) -> (<null>)
+      #scope: (Default)
+      # In file D:\CodeEnvironment\Anaconda3\envs\mindspore\Lib\site-packages\mindspore\ops\composite\base.py:606, 31~56/                        return grad_(fn, weights)(*args)/
+  Return(%5)
+      : (<null>)
+      #scope: (Default)
+      # In file D:\CodeEnvironment\Anaconda3\envs\mindspore\Lib\site-packages\mindspore\ops\composite\base.py:606, 24~56/                        return grad_(fn, weights)(*args)/
+}
+# Order:
+#   1: @after_grad_445:CNode_454{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> SymbolStr: 'Namespace:mindspore.ops.composite.base..<after_grad>', [2]: ValueNode<Symbol> grad_}
+#   2: @after_grad_445:CNode_455{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> SymbolStr: 'Namespace:mindspore.ops.composite.base..<after_grad>', [2]: ValueNode<Symbol> fn}
+#   3: @after_grad_445:CNode_456{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> SymbolStr: 'Namespace:mindspore.ops.composite.base..<after_grad>', [2]: ValueNode<Symbol> weights}
+#   4: @after_grad_441:CNode_460{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> CommonOPS: 'Namespace:mindspore._extends.parse.trope', [2]: ValueNode<Symbol> MakeTuple}
+#   5: @after_grad_445:CNode_457{[0]: CNode_454, [1]: CNode_455, [2]: CNode_456}
+#   6: @after_grad_445:CNode_459{[0]: ValueNode<Primitive> DoUnpackCall, [1]: CNode_457, [2]: CNode_458}
+#   7: @after_grad_445:CNode_461{[0]: ValueNode<Primitive> Return, [1]: CNode_459}
+
+
+# ===============================================================================================
+# The total of function graphs in evaluation stack: 3/4 (Ignored 1 internal frames).
+# ===============================================================================================
+
+
+# ===============================================================================================
+# The rest function graphs are the following:
+# ===============================================================================================
+No more function graphs.
+
