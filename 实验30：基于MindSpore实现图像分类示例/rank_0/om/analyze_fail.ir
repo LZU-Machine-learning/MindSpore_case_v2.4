@@ -1,0 +1,493 @@
+# ===============================================================================================
+# The following shows the last analyze fail log message.
+# ===============================================================================================
+
+----------------------------------------------------
+- Caught exception:
+----------------------------------------------------
+The parameter @after_grad_129:param_conv1.weight , its name 'conv1.weight' already exists. Please set a unique name for the parameter.
+For more details with the name of parameter, please refer to https://mindspore.cn/search?inputValue=Please%20set%20a%20unique%20name%20for%20the%20parameter
+
+----------------------------------------------------
+- C++ Call Stack: (For framework developers)
+----------------------------------------------------
+mindspore\ccsrc\pipeline\jit\ps\parse\resolve.cc:982 mindspore::parse::ResolveParameterObj
+
+----------------------------------------------------
+- The Traceback of Net Construct Code:
+----------------------------------------------------
+# 0 In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\ops\composite\base.py:606, 31~56
+                        return grad_(fn, weights)(*args)
+                               ^~~~~~~~~~~~~~~~~~~~~~~~~
+# 1 In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\2046306198.py:65, 17~32
+# 2 In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:32, 38~51
+# 3 In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\nn\layer\conv.py:367~368, 8~53
+        if self.has_bias:
+# 4 In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\nn\layer\conv.py:366, 32~43
+        output = self.conv2d(x, self.weight)
+                                ^~~~~~~~~~~
+
+# ===============================================================================================
+# The following shows the IR when the function graphs evaluation fails to help locate the problem.
+# You can search the last ------------------------> to the node which is evaluated failure.
+# Refer to https://www.mindspore.cn/search?inputValue=analyze_fail.ir to get more instructions.
+# ===============================================================================================
+
+# IR entry: @after_grad_129
+# Total subgraphs: 0
+
+# Total params: 10
+# Params:
+%para1_args0: <null>
+%para2_args1: <null>
+%para3_conv1.weight: <Ref[Tensor[Float32]], (6, 1, 5, 5), ref_key=conv1.weight>  :  has_default
+%para4_conv2.weight: <Ref[Tensor[Float32]], (16, 6, 5, 5), ref_key=conv2.weight>  :  has_default
+%para5_fc1.weight: <Ref[Tensor[Float32]], (120, 400), ref_key=fc1.weight>  :  has_default
+%para6_fc1.bias: <Ref[Tensor[Float32]], (120), ref_key=fc1.bias>  :  has_default
+%para7_fc2.weight: <Ref[Tensor[Float32]], (84, 120), ref_key=fc2.weight>  :  has_default
+%para8_fc2.bias: <Ref[Tensor[Float32]], (84), ref_key=fc2.bias>  :  has_default
+%para9_fc3.weight: <Ref[Tensor[Float32]], (10, 84), ref_key=fc3.weight>  :  has_default
+%para10_fc3.bias: <Ref[Tensor[Float32]], (10), ref_key=fc3.bias>  :  has_default
+
+subgraph attr:
+subgraph instance: after_grad_129 : 00000177BF684410
+# In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\ops\composite\base.py:604~606, 20~56/                    @jit(input_signature=dynamic_shape_inputs)/
+subgraph @after_grad_129() {
+  %0(CNode_142) = resolve(NameSpace[Entry: 'after_grad'], after_grad)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+  %1(CNode_143) = MakeTuple(%para1_args0, %para2_args1)
+      : (<Tensor[Float32], (32, 1, 32, 32)>, <Tensor[Int32], (32)>) -> (<Tuple[Tensor[Float32],Tensor[Int32]], TupleShape((32, 1, 32, 32), (32))>)
+      #scope: (Default)
+
+#------------------------> 0
+  %2(CNode_144) = DoUnpackCall(%0, %1)
+      : (<Func, NoShape>, <Tuple[Tensor[Float32],Tensor[Int32]], TupleShape((32, 1, 32, 32), (32))>) -> (<null>)
+      #scope: (Default)
+  Return(%2)
+      : (<null>)
+      #scope: (Default)
+      # In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\ops\composite\base.py:606, 24~56/                        return grad_(fn, weights)(*args)/
+}
+# Order:
+#   1: @after_grad_129:CNode_142{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> Entry: 'after_grad', [2]: ValueNode<Symbol> after_grad}
+#   2: @after_grad_129:CNode_144{[0]: ValueNode<Primitive> DoUnpackCall, [1]: CNode_142, [2]: CNode_143}
+#   3: @after_grad_129:CNode_145{[0]: ValueNode<Primitive> Return, [1]: CNode_144}
+
+
+subgraph attr:
+core: 1
+subgraph instance: UnpackCall_130 : 00000177BF687090
+
+subgraph @UnpackCall_130(%para0_Parameter_131, %para0_Parameter_132) {
+  %0(CNode_146) = TupleGetItem(%para0_Parameter_132, I64(0))
+      : (<Tuple[Tensor[Float32],Tensor[Int32]], TupleShape((32, 1, 32, 32), (32))>, <Int64, NoShape>) -> (<Tensor[Float32], (32, 1, 32, 32)>)
+      #scope: (Default)
+  %1(CNode_147) = TupleGetItem(%para0_Parameter_132, I64(1))
+      : (<Tuple[Tensor[Float32],Tensor[Int32]], TupleShape((32, 1, 32, 32), (32))>, <Int64, NoShape>) -> (<Tensor[Int32], (32)>)
+      #scope: (Default)
+
+#------------------------> 1
+  %2(CNode_148) = Parameter_131(%0, %1)
+      : (<Tensor[Float32], (32, 1, 32, 32)>, <Tensor[Int32], (32)>) -> (<null>)
+      #scope: (Default)
+  Return(%2)
+      : (<null>)
+      #scope: (Default)
+}
+# Order:
+#   1: @UnpackCall_130:CNode_148{[0]: param_Parameter_131, [1]: CNode_146, [2]: CNode_147}
+#   2: @UnpackCall_130:CNode_149{[0]: ValueNode<Primitive> Return, [1]: CNode_148}
+
+
+subgraph attr:
+subgraph instance: after_grad_133 : 00000177BF6806E0
+# In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\ops\composite\base.py:604~606, 20~56/                    @jit(input_signature=dynamic_shape_inputs)/
+subgraph @after_grad_133(%para0_args0, %para0_args1) {
+  %0(CNode_150) = resolve(NameSpace[SymbolStr: 'Namespace:mindspore.ops.composite.base..<after_grad>'], grad_)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+      # In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\ops\composite\base.py:606, 31~36/                        return grad_(fn, weights)(*args)/
+  %1(CNode_151) = resolve(NameSpace[SymbolStr: 'Namespace:mindspore.ops.composite.base..<after_grad>'], fn)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+      # In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\ops\composite\base.py:606, 37~39/                        return grad_(fn, weights)(*args)/
+  %2(CNode_152) = resolve(NameSpace[SymbolStr: 'Namespace:mindspore.ops.composite.base..<after_grad>'], weights)
+      : (<External, NoShape>, <External, NoShape>) -> (<Tuple[Ref[Tensor[Float32]]*8], TupleShape((6, 1, 5, 5), (16, 6, 5, 5), (120, 400), (120), (84, 120), (84), (10, 84), (10))>)
+      #scope: (Default)
+      # In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\ops\composite\base.py:606, 41~48/                        return grad_(fn, weights)(*args)/
+  %3(CNode_153) = %0(%1, %2)
+      : (<Func, NoShape>, <Tuple[Ref[Tensor[Float32]]*8], TupleShape((6, 1, 5, 5), (16, 6, 5, 5), (120, 400), (120), (84, 120), (84), (10, 84), (10))>) -> (<Func, NoShape>)
+      #scope: (Default)
+      # In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\ops\composite\base.py:606, 31~49/                        return grad_(fn, weights)(*args)/
+  %4(CNode_154) = MakeTuple(%para0_args0, %para0_args1)
+      : (<Tensor[Float32], (32, 1, 32, 32)>, <Tensor[Int32], (32)>) -> (<Tuple[Tensor[Float32],Tensor[Int32]], TupleShape((32, 1, 32, 32), (32))>)
+      #scope: (Default)
+      # In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\ops\composite\base.py:605, 36~40/                    def after_grad(*args):/
+
+#------------------------> 2
+  %5(CNode_155) = DoUnpackCall(%3, %4)
+      : (<Func, NoShape>, <Tuple[Tensor[Float32],Tensor[Int32]], TupleShape((32, 1, 32, 32), (32))>) -> (<null>)
+      #scope: (Default)
+      # In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\ops\composite\base.py:606, 31~56/                        return grad_(fn, weights)(*args)/
+  Return(%5)
+      : (<null>)
+      #scope: (Default)
+      # In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\ops\composite\base.py:606, 24~56/                        return grad_(fn, weights)(*args)/
+}
+# Order:
+#   1: @after_grad_133:CNode_150{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> SymbolStr: 'Namespace:mindspore.ops.composite.base..<after_grad>', [2]: ValueNode<Symbol> grad_}
+#   2: @after_grad_133:CNode_151{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> SymbolStr: 'Namespace:mindspore.ops.composite.base..<after_grad>', [2]: ValueNode<Symbol> fn}
+#   3: @after_grad_133:CNode_152{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> SymbolStr: 'Namespace:mindspore.ops.composite.base..<after_grad>', [2]: ValueNode<Symbol> weights}
+#   4: @after_grad_129:CNode_156{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> CommonOPS: 'Namespace:mindspore._extends.parse.trope', [2]: ValueNode<Symbol> MakeTuple}
+#   5: @after_grad_133:CNode_153{[0]: CNode_150, [1]: CNode_151, [2]: CNode_152}
+#   6: @after_grad_133:CNode_157{[0]: ValueNode<UnpackGraphPrimitive> UnpackGraph, [1]: CNode_151, [2]: CNode_154}
+#   7: @after_grad_133:CNode_155{[0]: ValueNode<Primitive> DoUnpackCall, [1]: CNode_153, [2]: CNode_154}
+#   8: @after_grad_133:CNode_158{[0]: ValueNode<Primitive> Return, [1]: CNode_155}
+
+
+subgraph attr:
+core: 1
+subgraph instance: UnpackCall_134 : 00000177BF6891F0
+
+subgraph @UnpackCall_134(%para0_Parameter_135, %para0_Parameter_136) {
+  %0(CNode_159) = TupleGetItem(%para0_Parameter_136, I64(0))
+      : (<Tuple[Tensor[Float32],Tensor[Int32]], TupleShape((32, 1, 32, 32), (32))>, <Int64, NoShape>) -> (<Tensor[Float32], (32, 1, 32, 32)>)
+      #scope: (Default)
+  %1(CNode_160) = TupleGetItem(%para0_Parameter_136, I64(1))
+      : (<Tuple[Tensor[Float32],Tensor[Int32]], TupleShape((32, 1, 32, 32), (32))>, <Int64, NoShape>) -> (<Tensor[Int32], (32)>)
+      #scope: (Default)
+
+#------------------------> 3
+  %2(CNode_161) = Parameter_135(%0, %1)
+      : (<Tensor[Float32], (32, 1, 32, 32)>, <Tensor[Int32], (32)>) -> (<null>)
+      #scope: (Default)
+  Return(%2)
+      : (<null>)
+      #scope: (Default)
+}
+# Order:
+#   1: @UnpackCall_134:CNode_161{[0]: param_Parameter_135, [1]: CNode_159, [2]: CNode_160}
+#   2: @UnpackCall_134:CNode_162{[0]: ValueNode<Primitive> Return, [1]: CNode_161}
+
+
+subgraph attr:
+core: 1
+k_graph: 1
+args_no_expand: 1
+subgraph instance: grad_forward_fn_137 : 00000177BF681200
+# In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\2046306198.py:64~67, 4~19/
+subgraph @grad_forward_fn_137 parent: [subgraph @grad_forward_fn_163](%para0_grad_forward_fn, %para0_grad_forward_fn) {
+  %0(CNode_164) = J(%para_Parameter_165) primitive_attrs: {side_effect_propagate: I64(1)}
+      : (<Func, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+
+#------------------------> 4
+  %1(CNode_166) = %0(%para0_grad_forward_fn, %para0_grad_forward_fn)
+      : (<Tensor[Float32], (32, 1, 32, 32)>, <Tensor[Int32], (32)>) -> (<null>)
+      #scope: (Default)
+  %2(CNode_167) = TupleGetItem(%1, I64(0))
+      : (<null>, <null>) -> (<null>)
+      #scope: (Default)
+  %3(CNode_168) = TupleGetItem(%1, I64(1))
+      : (<null>, <null>) -> (<null>)
+      #scope: (Default)
+  %4(CNode_169) = HyperMapPy_hyper_map[ones_like]{fn_leaf: MultitypeFuncGraph_ones_like{(TypeType), (CSRTensor), (Number), (COOTensor), (Tensor), (Func), (NoneType)}}(%2)
+      : (<null>) -> (<null>)
+      #scope: (Default)
+  %5(CNode_170) = %3(%4)
+      : (<null>) -> (<null>)
+      #scope: (Default)
+  %6(CNode_171) = TupleGetItem(%5, I64(0))
+      : (<null>, <null>) -> (<null>)
+      #scope: (Default)
+  %7(CNode_172) = Partial(MultitypeFuncGraph_env_get{(EnvType, Tensor), (EnvType, MapTensor)}, %6) primitive_attrs: {side_effect_propagate: I64(1)}
+      : (<null>, <null>) -> (<null>)
+      #scope: (Default)
+  %8(CNode_173) = HyperMap_hyper_map(%7, $(@grad_forward_fn_163:para_Parameter_174))
+      : (<null>, <Tuple[Ref[Tensor[Float32]]*8], TupleShape((6, 1, 5, 5), (16, 6, 5, 5), (120, 400), (120), (84, 120), (84), (10, 84), (10))>) -> (<null>)
+      #scope: (Default)
+  %9(CNode_175) = MakeTuple(%2, %8)
+      : (<null>, <null>) -> (<null>)
+      #scope: (Default)
+  Return(%9)
+      : (<null>)
+      #scope: (Default)
+}
+# Order:
+#   1: @grad_forward_fn_137:CNode_166{[0]: CNode_164, [1]: param_grad_forward_fn, [2]: param_grad_forward_fn}
+#   2: @grad_forward_fn_137:CNode_167{[0]: ValueNode<Primitive> TupleGetItem, [1]: CNode_166, [2]: ValueNode<Int64Imm> 0}
+#   3: @grad_forward_fn_137:CNode_168{[0]: ValueNode<Primitive> TupleGetItem, [1]: CNode_166, [2]: ValueNode<Int64Imm> 1}
+#   4: @grad_forward_fn_137:CNode_169{[0]: ValueNode<HyperMapPy> MetaFuncGraph-hyper_map[ones_like].77, [1]: CNode_167}
+#   5: @grad_forward_fn_137:CNode_170{[0]: CNode_168, [1]: CNode_169}
+#   6: @grad_forward_fn_137:CNode_171{[0]: ValueNode<Primitive> TupleGetItem, [1]: CNode_170, [2]: ValueNode<Int64Imm> 0}
+#   7: @grad_forward_fn_137:CNode_172{[0]: ValueNode<Primitive> Partial, [1]: ValueNode<MultitypeFuncGraph> MetaFuncGraph-env_get.6, [2]: CNode_171}
+#   8: @grad_forward_fn_137:CNode_173{[0]: ValueNode<HyperMap> MetaFuncGraph-hyper_map.176, [1]: CNode_172, [2]: param_Parameter_174}
+#   9: @grad_forward_fn_137:CNode_175{[0]: ValueNode<Primitive> MakeTuple, [1]: CNode_167, [2]: CNode_173}
+#  10: @grad_forward_fn_137:CNode_177{[0]: ValueNode<Primitive> Return, [1]: CNode_175}
+
+
+subgraph attr:
+defer_inline: 1
+subgraph instance: forward_fn_128 : 00000177BF687620
+# In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\2046306198.py:64~67, 4~19/
+subgraph @forward_fn_128(%para0_inputs, %para0_targets) {
+  %0(CNode_178) = resolve(NameSpace[SymbolStr: 'Namespace:__main__'], net_loss)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\2046306198.py:66, 15~23/
+  %1(CNode_179) = resolve(NameSpace[SymbolStr: 'Namespace:__main__..<forward_fn>'], network)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\2046306198.py:65, 17~24/
+
+#------------------------> 5
+  %2(logits) = %1(%para0_inputs)
+      : (<Tensor[Float32], (32, 1, 32, 32)>) -> (<null>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\2046306198.py:65, 17~32/
+  %3(loss) = %0(%2, %para0_targets)
+      : (<null>, <Tensor[Int32], (32)>) -> (<null>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\2046306198.py:66, 15~40/
+  Return(%3)
+      : (<null>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\2046306198.py:67, 8~19/
+}
+# Order:
+#   1: @forward_fn_128:CNode_179{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> SymbolStr: 'Namespace:__main__..<forward_fn>', [2]: ValueNode<Symbol> network}
+#   2: @forward_fn_128:CNode_180{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> CommonOPS: 'Namespace:mindspore._extends.parse.trope', [2]: ValueNode<Symbol> MakeTuple}
+#   4: @forward_fn_128:logits{[0]: CNode_179, [1]: param_inputs}
+#   5: @forward_fn_128:CNode_178{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> SymbolStr: 'Namespace:__main__', [2]: ValueNode<Symbol> net_loss}
+#   6: @forward_fn_128:CNode_181{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> CommonOPS: 'Namespace:mindspore._extends.parse.trope', [2]: ValueNode<Symbol> MakeTuple}
+#   8: @forward_fn_128:loss{[0]: CNode_178, [1]: logits, [2]: param_targets}
+#   9: @forward_fn_128:CNode_182{[0]: ValueNode<Primitive> Return, [1]: loss}
+
+
+subgraph attr:
+subgraph instance: __main___LeNet5_construct_138 : 00000177BF66BEB0
+# In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:30~43, 4~16/
+subgraph @__main___LeNet5_construct_138(%para0_x) {
+  %0(CNode_183) = resolve(NameSpace[ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>'], fc3)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:42, 12~20/
+  %1(CNode_184) = resolve(NameSpace[ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>'], relu)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:40, 12~21/
+  %2(CNode_185) = resolve(NameSpace[ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>'], fc2)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:40, 22~30/
+  %3(CNode_186) = resolve(NameSpace[ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>'], relu)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:38, 12~21/
+  %4(CNode_187) = resolve(NameSpace[ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>'], fc1)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:38, 22~30/
+  %5(CNode_188) = resolve(NameSpace[ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>'], flatten)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:36, 12~24/
+  %6(CNode_189) = resolve(NameSpace[ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>'], max_pool2d)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:34, 12~27/
+  %7(CNode_190) = resolve(NameSpace[ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>'], relu)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:34, 28~37/
+  %8(CNode_191) = resolve(NameSpace[ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>'], conv2)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:34, 38~48/
+  %9(CNode_192) = resolve(NameSpace[ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>'], max_pool2d)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:32, 12~27/
+  %10(CNode_193) = resolve(NameSpace[ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>'], relu)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:32, 28~37/
+  %11(CNode_194) = resolve(NameSpace[ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>'], conv1)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:32, 38~48/
+
+#------------------------> 6
+  %12(CNode_195) = %11(%para0_x)
+      : (<Tensor[Float32], (32, 1, 32, 32)>) -> (<null>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:32, 38~51/
+  %13(CNode_196) = %10(%12)
+      : (<null>) -> (<null>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:32, 28~52/
+  %14(x) = %9(%13)
+      : (<null>) -> (<null>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:32, 12~53/
+  %15(CNode_197) = %8(%14)
+      : (<null>) -> (<null>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:34, 38~51/
+  %16(CNode_198) = %7(%15)
+      : (<null>) -> (<null>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:34, 28~52/
+  %17(x) = %6(%16)
+      : (<null>) -> (<null>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:34, 12~53/
+  %18(x) = %5(%17)
+      : (<null>) -> (<null>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:36, 12~27/
+  %19(CNode_199) = %4(%18)
+      : (<null>) -> (<null>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:38, 22~33/
+  %20(x) = %3(%19)
+      : (<null>) -> (<null>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:38, 12~34/
+  %21(CNode_200) = %2(%20)
+      : (<null>) -> (<null>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:40, 22~33/
+  %22(x) = %1(%21)
+      : (<null>) -> (<null>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:40, 12~34/
+  %23(x) = %0(%22)
+      : (<null>) -> (<null>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:42, 12~23/
+  Return(%23)
+      : (<null>)
+      #scope: (Default)
+      # In file C:\Users\test\AppData\Local\Temp\ipykernel_24692\561357.py:43, 8~16/
+}
+# Order:
+#   1: @__main___LeNet5_construct_138:CNode_192{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>', [2]: ValueNode<Symbol> max_pool2d}
+#   2: @__main___LeNet5_construct_138:CNode_193{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>', [2]: ValueNode<Symbol> relu}
+#   3: @__main___LeNet5_construct_138:CNode_194{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>', [2]: ValueNode<Symbol> conv1}
+#   4: @__main___LeNet5_construct_138:CNode_201{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> CommonOPS: 'Namespace:mindspore._extends.parse.trope', [2]: ValueNode<Symbol> MakeTuple}
+#   6: @__main___LeNet5_construct_138:CNode_195{[0]: CNode_194, [1]: param_x}
+#   7: @__main___LeNet5_construct_138:CNode_202{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> CommonOPS: 'Namespace:mindspore._extends.parse.trope', [2]: ValueNode<Symbol> MakeTuple}
+#   9: @__main___LeNet5_construct_138:CNode_196{[0]: CNode_193, [1]: CNode_195}
+#  10: @__main___LeNet5_construct_138:CNode_203{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> CommonOPS: 'Namespace:mindspore._extends.parse.trope', [2]: ValueNode<Symbol> MakeTuple}
+#  12: @__main___LeNet5_construct_138:x{[0]: CNode_192, [1]: CNode_196}
+#  13: @__main___LeNet5_construct_138:CNode_189{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>', [2]: ValueNode<Symbol> max_pool2d}
+#  14: @__main___LeNet5_construct_138:CNode_190{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>', [2]: ValueNode<Symbol> relu}
+#  15: @__main___LeNet5_construct_138:CNode_191{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>', [2]: ValueNode<Symbol> conv2}
+#  16: @__main___LeNet5_construct_138:CNode_204{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> CommonOPS: 'Namespace:mindspore._extends.parse.trope', [2]: ValueNode<Symbol> MakeTuple}
+#  18: @__main___LeNet5_construct_138:CNode_197{[0]: CNode_191, [1]: x}
+#  19: @__main___LeNet5_construct_138:CNode_205{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> CommonOPS: 'Namespace:mindspore._extends.parse.trope', [2]: ValueNode<Symbol> MakeTuple}
+#  21: @__main___LeNet5_construct_138:CNode_198{[0]: CNode_190, [1]: CNode_197}
+#  22: @__main___LeNet5_construct_138:CNode_206{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> CommonOPS: 'Namespace:mindspore._extends.parse.trope', [2]: ValueNode<Symbol> MakeTuple}
+#  24: @__main___LeNet5_construct_138:x{[0]: CNode_189, [1]: CNode_198}
+#  25: @__main___LeNet5_construct_138:CNode_188{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>', [2]: ValueNode<Symbol> flatten}
+#  26: @__main___LeNet5_construct_138:CNode_207{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> CommonOPS: 'Namespace:mindspore._extends.parse.trope', [2]: ValueNode<Symbol> MakeTuple}
+#  28: @__main___LeNet5_construct_138:x{[0]: CNode_188, [1]: x}
+#  29: @__main___LeNet5_construct_138:CNode_186{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>', [2]: ValueNode<Symbol> relu}
+#  30: @__main___LeNet5_construct_138:CNode_187{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>', [2]: ValueNode<Symbol> fc1}
+#  31: @__main___LeNet5_construct_138:CNode_208{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> CommonOPS: 'Namespace:mindspore._extends.parse.trope', [2]: ValueNode<Symbol> MakeTuple}
+#  33: @__main___LeNet5_construct_138:CNode_199{[0]: CNode_187, [1]: x}
+#  34: @__main___LeNet5_construct_138:CNode_209{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> CommonOPS: 'Namespace:mindspore._extends.parse.trope', [2]: ValueNode<Symbol> MakeTuple}
+#  36: @__main___LeNet5_construct_138:x{[0]: CNode_186, [1]: CNode_199}
+#  37: @__main___LeNet5_construct_138:CNode_184{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>', [2]: ValueNode<Symbol> relu}
+#  38: @__main___LeNet5_construct_138:CNode_185{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>', [2]: ValueNode<Symbol> fc2}
+#  39: @__main___LeNet5_construct_138:CNode_210{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> CommonOPS: 'Namespace:mindspore._extends.parse.trope', [2]: ValueNode<Symbol> MakeTuple}
+#  41: @__main___LeNet5_construct_138:CNode_200{[0]: CNode_185, [1]: x}
+#  42: @__main___LeNet5_construct_138:CNode_211{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> CommonOPS: 'Namespace:mindspore._extends.parse.trope', [2]: ValueNode<Symbol> MakeTuple}
+#  44: @__main___LeNet5_construct_138:x{[0]: CNode_184, [1]: CNode_200}
+#  45: @__main___LeNet5_construct_138:CNode_183{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> ClassMember: 'Namespace:__main__..<LeNet5::1613659907824>', [2]: ValueNode<Symbol> fc3}
+#  46: @__main___LeNet5_construct_138:CNode_212{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> CommonOPS: 'Namespace:mindspore._extends.parse.trope', [2]: ValueNode<Symbol> MakeTuple}
+#  48: @__main___LeNet5_construct_138:x{[0]: CNode_183, [1]: x}
+#  49: @__main___LeNet5_construct_138:CNode_213{[0]: ValueNode<Primitive> Return, [1]: x}
+
+
+subgraph attr:
+subgraph instance: mindspore_nn_layer_conv_Conv2d_construct_139 : 00000177BF67EB10
+# In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\nn\layer\conv.py:365~369, 4~21/    def construct(self, x):/
+subgraph @mindspore_nn_layer_conv_Conv2d_construct_139(%para0_x) {
+
+#------------------------> 7
+  %0(CNode_214) = call @mindspore_nn_layer_conv_Conv2d_construct_140()
+      #scope: (Default)
+      # In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\nn\layer\conv.py:367~368, 8~53/        if self.has_bias:/
+  Return(%0)
+      : (<null>)
+      #scope: (Default)
+      # In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\nn\layer\conv.py:367~368, 8~53/        if self.has_bias:/
+}
+# Order:
+#   1: @mindspore_nn_layer_conv_Conv2d_construct_139:CNode_215{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> ClassMember: 'Namespace:mindspore.nn.layer.conv..<Conv2d::1613714269648>', [2]: ValueNode<Symbol> conv2d}
+#   2: @mindspore_nn_layer_conv_Conv2d_construct_139:CNode_216{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> ClassMember: 'Namespace:mindspore.nn.layer.conv..<Conv2d::1613714269648>', [2]: ValueNode<Symbol> weight}
+#   3: @mindspore_nn_layer_conv_Conv2d_construct_139:CNode_217{[0]: ValueNode<Primitive> resolve, [1]: ValueNode<NameSpace> CommonOPS: 'Namespace:mindspore._extends.parse.trope', [2]: ValueNode<Symbol> MakeTuple}
+#   5: @mindspore_nn_layer_conv_Conv2d_construct_139:output{[0]: CNode_215, [1]: param_x, [2]: CNode_216}
+#   6: @mindspore_nn_layer_conv_Conv2d_construct_139:CNode_214{[0]: ValueNode<FuncGraph> mindspore_nn_layer_conv_Conv2d_construct_140}
+#   7: @mindspore_nn_layer_conv_Conv2d_construct_139:CNode_218{[0]: ValueNode<Primitive> Return, [1]: CNode_214}
+
+
+subgraph attr:
+subgraph instance: mindspore_nn_layer_conv_Conv2d_construct_140 : 00000177BF67F0A0
+# In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\nn\layer\conv.py:365~369, 4~21/    def construct(self, x):/
+subgraph @mindspore_nn_layer_conv_Conv2d_construct_140 parent: [subgraph @mindspore_nn_layer_conv_Conv2d_construct_139]() {
+
+#------------------------> 8
+  %0(CNode_219) = call @mindspore_nn_layer_conv_Conv2d_construct_141()
+      #scope: (Default)
+      # In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\nn\layer\conv.py:367~368, 8~53/        if self.has_bias:/
+  Return(%0)
+      : (<null>)
+      #scope: (Default)
+      # In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\nn\layer\conv.py:367~368, 8~53/        if self.has_bias:/
+}
+# Order:
+#   1: @mindspore_nn_layer_conv_Conv2d_construct_140:CNode_219{[0]: ValueNode<FuncGraph> mindspore_nn_layer_conv_Conv2d_construct_141}
+#   2: @mindspore_nn_layer_conv_Conv2d_construct_140:CNode_220{[0]: ValueNode<Primitive> Return, [1]: CNode_219}
+
+
+subgraph attr:
+subgraph instance: mindspore_nn_layer_conv_Conv2d_construct_141 : 00000177BF682DD0
+# In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\nn\layer\conv.py:365~369, 4~21/    def construct(self, x):/
+subgraph @mindspore_nn_layer_conv_Conv2d_construct_141 parent: [subgraph @mindspore_nn_layer_conv_Conv2d_construct_139]() {
+  %0(CNode_215) = resolve(NameSpace[ClassMember: 'Namespace:mindspore.nn.layer.conv..<Conv2d::1613714269648>'], conv2d)
+      : (<External, NoShape>, <External, NoShape>) -> (<Func, NoShape>)
+      #scope: (Default)
+      # In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\nn\layer\conv.py:366, 17~28/        output = self.conv2d(x, self.weight)/
+
+#------------------------> 9
+  %1(CNode_216) = resolve(NameSpace[ClassMember: 'Namespace:mindspore.nn.layer.conv..<Conv2d::1613714269648>'], weight)
+      : (<External, NoShape>, <External, NoShape>) -> (<null>)
+      #scope: (Default)
+      # In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\nn\layer\conv.py:366, 32~43/        output = self.conv2d(x, self.weight)/
+  %2(output) = %0(%para0_x, %1)
+      : (<Tensor[Float32], (32, 1, 32, 32)>, <null>) -> (<null>)
+      #scope: (Default)
+      # In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\nn\layer\conv.py:366, 17~44/        output = self.conv2d(x, self.weight)/
+  Return(%2)
+      : (<null>)
+      #scope: (Default)
+      # In file d:\Environments\conda_envs\mindspore_2.4\Lib\site-packages\mindspore\nn\layer\conv.py:369, 8~21/        return output/
+}
+# Order:
+#   1: @mindspore_nn_layer_conv_Conv2d_construct_141:CNode_221{[0]: ValueNode<Primitive> Return, [1]: output}
+
+
+# ===============================================================================================
+# The total of function graphs in evaluation stack: 10/12 (Ignored 2 internal frames).
+# ===============================================================================================
+
+
+# ===============================================================================================
+# The rest function graphs are the following:
+# ===============================================================================================
+No more function graphs.
+
